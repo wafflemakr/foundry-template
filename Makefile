@@ -29,7 +29,7 @@ test :; forge test
 
 fuzz :; forge test --match-contract StopOnRevertInvariants
 
-coverage :; forge coverage --report debug > coverage-report.txt
+coverage :; forge coverage --report lcov
 
 snapshot :; forge snapshot
 
