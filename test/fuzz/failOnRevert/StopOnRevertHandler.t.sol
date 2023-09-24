@@ -10,6 +10,7 @@ import {MockV3Aggregator} from "../../mocks/MockV3Aggregator.sol";
 import {DSCEngine, AggregatorV3Interface} from "../../../src/DSCEngine.sol";
 import {DecentralizedStableCoin} from "../../../src/DecentralizedStableCoin.sol";
 import {MockV3Aggregator} from "../../mocks/MockV3Aggregator.sol";
+import {TimestampStore} from "../store/TimestampStore.t.sol";
 import {console} from "forge-std/console.sol";
 
 contract StopOnRevertHandler is Test {
@@ -23,12 +24,16 @@ contract StopOnRevertHandler is Test {
     ERC20Mock public weth;
     ERC20Mock public wbtc;
 
+    // Track time
+    TimestampStore public timestampStore;
+
     // Ghost Variables
     uint96 public constant MAX_DEPOSIT_SIZE = type(uint96).max;
 
-    constructor(DSCEngine _dscEngine, DecentralizedStableCoin _dsc) {
+    constructor(DSCEngine _dscEngine, DecentralizedStableCoin _dsc, TimestampStore _timestampStore) {
         dscEngine = _dscEngine;
         dsc = _dsc;
+        timestampStore = _timestampStore;
 
         address[] memory collateralTokens = dscEngine.getCollateralTokens();
         weth = ERC20Mock(collateralTokens[0]);
@@ -38,12 +43,29 @@ contract StopOnRevertHandler is Test {
         btcUsdPriceFeed = MockV3Aggregator(dscEngine.getCollateralTokenPriceFeed(address(wbtc)));
     }
 
+    /////////////////////////////////////////////
+    //              Time Updates
+    /////////////////////////////////////////////
+
+    /// @dev Simulates the passage of time. The time jump is upper bounded so that streams don't settle too quickly.
+    /// See https://github.com/foundry-rs/foundry/issues/4994.
+    /// @param timeJumpSeed A fuzzed value needed for generating random time warps.
+    modifier advanceTime(uint256 timeJumpSeed) {
+        uint256 timeJump = timeJumpSeed % 600 + 1 minutes;
+        timestampStore.increaseCurrentTimestamp(timeJump);
+        vm.warp(timestampStore.currentTimestamp());
+        _;
+    }
+
     // FUNCTOINS TO INTERACT WITH
 
     ///////////////
     // DSCEngine //
     ///////////////
-    function mintAndDepositCollateral(uint256 collateralSeed, uint256 amountCollateral) public {
+    function mintAndDepositCollateral(uint256 collateralSeed, uint256 amountCollateral)
+        public
+        advanceTime(collateralSeed)
+    {
         // must be more than 0
         amountCollateral = bound(amountCollateral, 1, MAX_DEPOSIT_SIZE);
         ERC20Mock collateral = _getCollateralFromSeed(collateralSeed);

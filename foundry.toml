@@ -1,8 +1,39 @@
 [profile.default]
-src = "src"
-out = "out"
+src = 'src'
+out = 'out'
+test = 'test'
 libs = ["lib"]
+script = "script"
+sizes = true
+solc = "0.8.19"
+optimizer = true
+optimizer_runs = 200
 remappings = ['forge-std/=lib/forge-std/src/','@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/', '@openzeppelin/contracts=lib/openzeppelin-contracts/contracts']
+
+# Compile only the production code and the test mocks with via IR
+[profile.optimized]
+  out = "out-optimized"
+  test = "test/mocks"
+  via_ir = true
+
+# Test the optimized contracts without re-compiling them
+[profile.test-optimized]
+  src = "test"
+
+[doc]
+  ignore = ["**/*.t.sol"]
+  out = "docs"
+  repository = "https://github.com/Cyfrin/foundry-defi-stablecoin-f23"
+
+[fmt]
+  bracket_spacing = true
+  int_types = "long"
+  line_length = 120
+  multiline_func_header = "all"
+  number_underscore = "thousands"
+  quote_style = "double"
+  tab_width = 4
+  wrap_comments = true
 
 [etherscan]
 mainnet = { key = "${ETHERSCAN_API_KEY}" }
@@ -16,6 +47,6 @@ runs = 128
 depth = 128
 fail_on_revert = true
 
-
-
-# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+# Slither
+# https://github.com/crytic/slither
+# brew install slither-analyzer

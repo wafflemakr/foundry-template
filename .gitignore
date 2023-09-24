@@ -1,6 +1,7 @@
 # Compiler files
 cache/
 out/
+out-optimized/
 
 # Ignores development broadcast logs
 !/broadcast
@@ -13,3 +14,7 @@ docs/
 
 # Dotenv file
 .env
+
+# coverage
+lcov.info
+coverage/

@@ -15,12 +15,14 @@ import {HelperConfig} from "../../../script/HelperConfig.s.sol";
 import {DeployDSC} from "../../../script/DeployDSC.s.sol";
 import {ERC20Mock} from "@openzeppelin/contracts/mocks/ERC20Mock.sol";
 import {StopOnRevertHandler} from "./StopOnRevertHandler.t.sol";
+import {TimestampStore} from "../store/TimestampStore.t.sol";
 import {console} from "forge-std/console.sol";
 
 contract StopOnRevertInvariants is StdInvariant, Test {
     DSCEngine public dsce;
     DecentralizedStableCoin public dsc;
     HelperConfig public helperConfig;
+    TimestampStore internal timestampStore;
 
     address public ethUsdPriceFeed;
     address public btcUsdPriceFeed;
@@ -41,16 +43,27 @@ contract StopOnRevertInvariants is StdInvariant, Test {
 
     StopOnRevertHandler public handler;
 
+    /*//////////////////////////////////////////////////////////////////////////
+                                     MODIFIERS
+    //////////////////////////////////////////////////////////////////////////*/
+
+    modifier useCurrentTimestamp() {
+        vm.warp(timestampStore.currentTimestamp());
+        _;
+    }
+
     function setUp() external {
+        timestampStore = new TimestampStore();
+
         DeployDSC deployer = new DeployDSC();
         (dsc, dsce, helperConfig) = deployer.run();
         (ethUsdPriceFeed, btcUsdPriceFeed, weth, wbtc,) = helperConfig.activeNetworkConfig();
-        handler = new StopOnRevertHandler(dsce, dsc);
+        handler = new StopOnRevertHandler(dsce, dsc, timestampStore);
         targetContract(address(handler));
         // targetContract(address(ethUsdPriceFeed)); Why can't we just do this?
     }
 
-    function invariant_protocolMustHaveMoreValueThatTotalSupplyDollars() public view {
+    function invariant_protocolMustHaveMoreValueThatTotalSupplyDollars() public useCurrentTimestamp {
         uint256 totalSupply = dsc.totalSupply();
         uint256 wethDeposted = ERC20Mock(weth).balanceOf(address(dsce));
         uint256 wbtcDeposited = ERC20Mock(wbtc).balanceOf(address(dsce));
@@ -64,7 +77,7 @@ contract StopOnRevertInvariants is StdInvariant, Test {
         assert(wethValue + wbtcValue >= totalSupply);
     }
 
-    function invariant_gettersCantRevert() public view {
+    function invariant_gettersCantRevert() public useCurrentTimestamp {
         dsce.getAdditionalFeedPrecision();
         dsce.getCollateralTokens();
         dsce.getLiquidationBonus();
