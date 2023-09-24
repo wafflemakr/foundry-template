@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: all test clean deploy fund help install snapshot format anvil 
+.PHONY: all test fuzz clean deploy fund help install snapshot format anvil 
 
 DEFAULT_ANVIL_KEY := 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
@@ -26,6 +26,8 @@ update:; forge update
 build:; forge build
 
 test :; forge test 
+
+fuzz :; forge test --match-contract StopOnRevertInvariants
 
 coverage :; forge coverage --report debug > coverage-report.txt
 
