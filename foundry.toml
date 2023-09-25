@@ -47,6 +47,33 @@ runs = 128
 depth = 128
 fail_on_revert = true
 
+# See "SMTChecker and Formal Verification" in the Solidity docs
+[profile.smt]
+ignored_error_codes = [
+    7737, # Disable inline assembly warnings
+]
+out = "out-optimized"
+script = "src"
+test = "src"
+via_ir = true
+
+[profile.smt.model_checker]
+engine = "chc" # constrained Horn clauses
+invariants = ["contract", "reentrancy"]
+show_unproved = true
+timeout = 100_000 # in milliseconds, per solving query
+targets = [
+    "assert",
+    "constantCondition",
+    "divByZero",
+    "outOfBounds",
+    "overflow",
+    "underflow",
+]
+
+[profile.smt.model_checker.contracts]
+"src/DSCEngine.sol" = ["DSCEngine"]
+
 # Slither
 # https://github.com/crytic/slither
 # brew install slither-analyzer

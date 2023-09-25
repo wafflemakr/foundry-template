@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: all test fuzz clean deploy fund help install snapshot format anvil 
+.PHONY: all test fuzz clean deploy fund help install snapshot format anvil smt coverage
 
 DEFAULT_ANVIL_KEY := 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
@@ -24,6 +24,8 @@ install :; forge install cyfrin/foundry-devops@0.0.11 --no-commit && forge insta
 update:; forge update
 
 build:; forge build
+
+smt :; FOUNDRY_PROFILE=smt forge build
 
 test :; forge test --no-match-path "test/fuzz/**/*Invariants.t.sol"
 
