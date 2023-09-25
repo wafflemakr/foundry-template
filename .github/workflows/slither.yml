@@ -19,7 +19,7 @@ jobs:
 
       - name: Run Forge build
         run: |
-          make all
+          forge build --force --sizes
         id: build
 
       - uses: crytic/slither-action@v0.3.0
