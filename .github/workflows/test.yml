@@ -2,9 +2,6 @@ name: Forge Testing
 
 on: [workflow_dispatch, push, pull_request]
 
-env:
-  FOUNDRY_PROFILE: ci
-
 jobs:
   format:
     runs-on: ubuntu-latest
