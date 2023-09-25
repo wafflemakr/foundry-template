@@ -23,5 +23,3 @@ jobs:
         id: build
 
       - uses: crytic/slither-action@v0.3.0
-        with:
-          target: "src/"
