@@ -17,11 +17,6 @@ jobs:
         with:
           version: nightly
 
-      - name: Install Dependencies and Build
-        run: |
-          make all
-        id: build
-
       - uses: crytic/slither-action@v0.3.0
         id: slither
         with:
