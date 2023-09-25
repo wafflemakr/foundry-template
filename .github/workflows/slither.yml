@@ -17,9 +17,9 @@ jobs:
         with:
           version: nightly
 
-      - name: Run Forge build
+      - name: Install Dependencies and Build
         run: |
-          forge build --force --sizes
+          make all
         id: build
 
       - uses: crytic/slither-action@v0.3.0

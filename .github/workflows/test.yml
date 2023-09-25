@@ -6,7 +6,6 @@ env:
   FOUNDRY_PROFILE: ci
 
 jobs:
-
   format:
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +21,7 @@ jobs:
           forge --version
           forge fmt --check
         id: build
-        
+
   test:
     runs-on: ubuntu-latest
     steps:
