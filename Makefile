@@ -18,7 +18,7 @@ clean  :; forge clean
 # Remove modules
 remove :; rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
 
-install :; forge install cyfrin/foundry-devops@0.0.11 --no-commit && forge install smartcontractkit/chainlink-brownie-contracts@0.6.1 --no-commit && forge install foundry-rs/forge-std@v1.5.3 --no-commit && forge install openzeppelin/openzeppelin-contracts@v4.8.1 --no-commit
+install :; forge install cyfrin/foundry-devops@0.0.11 --no-commit && forge install smartcontractkit/chainlink-brownie-contracts@0.6.1 --no-commit && forge install foundry-rs/forge-std@v1.5.3 --no-commit && forge install openzeppelin/openzeppelin-contracts@v4.9.1 --no-commit
 
 # Update Dependencies
 update:; forge update
@@ -27,9 +27,9 @@ build:; forge build
 
 smt :; FOUNDRY_PROFILE=smt forge build
 
-test :; forge test --no-match-path "test/fuzz/**/*Invariants.t.sol"
+test :; forge test --no-match-contract Invariants
 
-fuzz :; forge test --match-path "test/fuzz/**/*Invariants.t.sol" -vvv
+fuzz :; forge test --match-contract Invariants
 
 # dependencies: brew install lcov &&  brew install genhtml
 # https://www.rareskills.io/post/foundry-forge-coverage

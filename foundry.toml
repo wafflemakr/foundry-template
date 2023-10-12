@@ -5,39 +5,43 @@ test = 'test'
 libs = ["lib"]
 script = "script"
 sizes = true
-solc = "0.8.19"
+auto_detect_solc = true
+auto_detect_remappings = true
 optimizer = true
 optimizer_runs = 200
-remappings = ['forge-std/=lib/forge-std/src/','@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/', '@openzeppelin/contracts=lib/openzeppelin-contracts/contracts']
+remappings = [
+  'forge-std/=lib/forge-std/src/',
+  '@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/',
+  '@openzeppelin/contracts=lib/openzeppelin-contracts/contracts',
+]
 
 # Compile only the production code and the test mocks with via IR
 [profile.optimized]
-  out = "out-optimized"
-  test = "test/mocks"
-  via_ir = true
+out = "out-optimized"
+test = "test/mocks"
+via_ir = true
 
 # Test the optimized contracts without re-compiling them
 [profile.test-optimized]
-  src = "test"
+src = "test"
 
 [doc]
-  ignore = ["**/*.t.sol"]
-  out = "docs"
-  repository = "https://github.com/Cyfrin/foundry-defi-stablecoin-f23"
+ignore = ["**/*.t.sol"]
+out = "docs"
+repository = "https://github.com/Cyfrin/foundry-defi-stablecoin-f23"
 
 [fmt]
-  bracket_spacing = true
-  int_types = "long"
-  line_length = 120
-  multiline_func_header = "all"
-  number_underscore = "thousands"
-  quote_style = "double"
-  tab_width = 4
-  wrap_comments = true
+bracket_spacing = true
+int_types = "long"
+line_length = 120
+multiline_func_header = "all"
+number_underscore = "thousands"
+quote_style = "double"
+tab_width = 4
 
 [etherscan]
 mainnet = { key = "${ETHERSCAN_API_KEY}" }
-sepolia = {key = "${ETHERSCAN_API_KEY}"}
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
 
 [rpc_endpoints]
 sepolia = "${SEPOLIA_RPC_URL}"
@@ -50,7 +54,7 @@ fail_on_revert = true
 # See "SMTChecker and Formal Verification" in the Solidity docs
 [profile.smt]
 ignored_error_codes = [
-    7737, # Disable inline assembly warnings
+  7737, # Disable inline assembly warnings
 ]
 out = "out-optimized"
 script = "src"
@@ -63,12 +67,12 @@ invariants = ["contract", "reentrancy"]
 show_unproved = true
 timeout = 100_000 # in milliseconds, per solving query
 targets = [
-    "assert",
-    "constantCondition",
-    "divByZero",
-    "outOfBounds",
-    "overflow",
-    "underflow",
+  "assert",
+  "constantCondition",
+  "divByZero",
+  "outOfBounds",
+  "overflow",
+  "underflow",
 ]
 
 [profile.smt.model_checker.contracts]
