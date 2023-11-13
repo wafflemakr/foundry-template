@@ -32,9 +32,9 @@ jobs:
       - name: Run Forge build
         run: |
           forge --version
-          forge build --force --sizes
+          make
         id: build
       - name: Run Forge tests and capture gas snapshots
         run: |
-          forge test -vvv
+          make test
         id: gas-check

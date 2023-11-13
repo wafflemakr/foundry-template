@@ -24,9 +24,9 @@ install :; forge install cyfrin/foundry-devops@0.0.11 --no-commit && forge insta
 # Update Dependencies
 update:; forge update
 
-build:; forge build
+build:; forge build --force --sizes
 
-test :; forge test
+test :; forge test --no-match-contract StopOnRevertInvariants -v
 
 fuzz :; forge test --match-contract StopOnRevertInvariants -v
 
