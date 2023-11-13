@@ -26,7 +26,11 @@ update:; forge update
 
 build:; forge build
 
-test :; forge test 
+test :; forge test
+
+fuzz :; forge test --match-contract StopOnRevertInvariants -v
+
+coverage :; forge coverage --report lcov 
 
 snapshot :; forge snapshot
 

@@ -1,6 +1,13 @@
 {
   "detectors_to_exclude": "naming-convention,reentrancy-events,solc-version,timestamp",
-  "filter_paths": "(lib|test)",
+  "filter_paths": "(lib|test/|mocks/script/)",
+  "exclude_informational": false,
+  "exclude_low": false,
+  "exclude_medium": false,
+  "exclude_high": false,
+  "exclude_dependencies": true,
+  "legacy_ast": false,
+  "disable_color": false,
   "solc_remaps": [
     "@openzeppelin/contracts=lib/openzeppelin-contracts/contracts/",
     "@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/",

@@ -21,3 +21,6 @@ coverage/
 
 # Dependencies 
 lib/
+
+# analyzers
+report.md
