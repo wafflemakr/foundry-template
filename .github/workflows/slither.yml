@@ -20,6 +20,6 @@ jobs:
       - uses: crytic/slither-action@v0.3.0
         id: slither
         with:
-          solc-version: 0.8.19
+          solc-version: 0.8.18
           fail-on: none
           target: "src/"
