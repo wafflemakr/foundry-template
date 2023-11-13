@@ -1,8 +1,10 @@
 -include .env
 
-.PHONY: all test fuzz clean deploy fund help install snapshot format anvil smt coverage
+.PHONY: all test clean deploy fund help install snapshot format anvil scopefile
 
 DEFAULT_ANVIL_KEY := 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
+all: remove install build
 
 help:
 	@echo "Usage:"
@@ -10,7 +12,6 @@ help:
 	@echo ""
 	@echo "  make fund [ARGS=...]\n    example: make deploy ARGS=\"--network sepolia\""
 
-all: clean remove install update build
 
 # Clean the repo
 clean  :; forge clean
@@ -18,22 +19,14 @@ clean  :; forge clean
 # Remove modules
 remove :; rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
 
-install :; forge install cyfrin/foundry-devops@0.0.11 --no-commit && forge install smartcontractkit/chainlink-brownie-contracts@0.6.1 --no-commit && forge install foundry-rs/forge-std@v1.5.3 --no-commit && forge install openzeppelin/openzeppelin-contracts@v4.9.1 --no-commit
+install :; forge install foundry-rs/forge-std --no-commit && forge install openzeppelin/openzeppelin-contracts@4.8.0 --no-commit 
 
 # Update Dependencies
 update:; forge update
 
 build:; forge build
 
-smt :; FOUNDRY_PROFILE=smt forge build
-
-test :; forge test --no-match-contract Invariants
-
-fuzz :; forge test --match-contract Invariants
-
-# dependencies: brew install lcov &&  brew install genhtml
-# https://www.rareskills.io/post/foundry-forge-coverage
-coverage :; forge coverage --report lcov && genhtml lcov.info --branch-coverage --output-dir coverage
+test :; forge test 
 
 snapshot :; forge snapshot
 
@@ -41,13 +34,10 @@ format :; forge fmt
 
 anvil :; anvil -m 'test test test test test test test test test test test junk' --steps-tracing --block-time 1
 
-NETWORK_ARGS := --rpc-url http://localhost:8545 --private-key $(DEFAULT_ANVIL_KEY) --broadcast
+slither :; slither . --config-file slither.config.json 
 
-ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
-	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
-endif
+aderyn :; aderyn .
 
-deploy:
-	@forge script script/DeployDSC.s.sol:DeployDSC $(NETWORK_ARGS)
+scope :; tree ./src/ | sed 's/└/#/g; s/──/--/g; s/├/#/g; s/│ /|/g; s/│/|/g'
 
-
+scopefile :; @tree ./src/ | sed 's/└/#/g' | awk -F '── ' '!/\.sol$$/ { path[int((length($$0) - length($$2))/2)] = $$2; next } { p = "src"; for(i=2; i<=int((length($$0) - length($$2))/2); i++) if (path[i] != "") p = p "/" path[i]; print p "/" $$2; }' > scope.txt
