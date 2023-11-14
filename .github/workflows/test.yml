@@ -34,7 +34,7 @@ jobs:
           forge --version
           make
         id: build
-      - name: Run Forge tests and capture gas snapshots
+      - name: Run Forge Unit Tests
         run: |
           make test
         id: gas-check

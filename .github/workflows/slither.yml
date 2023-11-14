@@ -21,4 +21,4 @@ jobs:
         id: slither
         with:
           solc-version: 0.8.18
-          fail-on: none
+          fail-on: high
